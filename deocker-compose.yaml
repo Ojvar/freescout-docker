@@ -1,0 +1,48 @@
+version: "3.7"
+
+services:
+  mariadb:
+    image: knode0.qeng.ir:5000/mariadb:latest
+    container_name: mariadb
+    hostname: mariadb
+    volumes:
+      - ./data:/var/lib/mysql:rw
+    environment:
+      MARIADB_ROOT_PASSWORD: root__pwd__1234
+      MARIADB_DATABASE: freescout
+      MARIADB_USER: db_admin
+      MARIADB_PASSWORD: dbadmin__pwd__1234
+    ports:
+      - 40003:3306
+    networks:
+      - freescout-net
+  freescout:
+    image: knode0.qeng.ir:5000/tiredofit/freescout
+    container_name: freescout
+    hostname: freescout
+    ports:
+    environment:
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_NAME: freescout
+      DB_USER: db_admin
+      DB_PASS: dbadmin__pwd__1234
+      ADMIN_PASS: ahmo@@1234
+      ADMIN_FIRST_NAME: Amir
+      ADMIN_LAST_NAME: Ojvar
+      ADMIN_EMAIL: MOjvar.AmirHossein@gmail.com
+      APPLICATION_NAME: "QENG Ticketing"
+      SITE_URL: http://192.168.0.84:15001
+    ports:
+      - 15001:80
+    depends_on:
+      - mariadb
+    networks:
+      - freescout-net
+
+networks:
+  freescout-net:
+
+## CARETE DATABASE db_admin;
+## GRANT ALL PRIVILEGES ON *.* TO 'db_admin'@'%' IDENTIFIED BY 'dbadmin__pwd__1234';
+## FLUSH PRIVILEGES;
